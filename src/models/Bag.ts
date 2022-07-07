@@ -30,7 +30,7 @@ export class Bag extends Base {
   get payloadVolume(): number {
     if (this.cuboids) {
       return this.cuboids.reduce(
-        (sum: number, cur: Cuboid) => cur.volume || 0 + sum,
+        (sum: number, cur: Cuboid) => cur.volume + sum,
         0
       );
     }
