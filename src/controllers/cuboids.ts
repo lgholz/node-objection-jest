@@ -7,7 +7,7 @@ export const list = async (req: Request, res: Response): Promise<Response> => {
   const ids = req.query.ids as Id[];
   const cuboids = await Cuboid.query().findByIds(ids).withGraphFetched('bag');
 
-  return res.status(200).json(cuboids);
+  return res.status(HttpStatus.OK).json(cuboids);
 };
 
 export const get = async (req: Request, res: Response): Promise<Response> => {
@@ -18,7 +18,7 @@ export const get = async (req: Request, res: Response): Promise<Response> => {
     return res.sendStatus(HttpStatus.NOT_FOUND);
   }
 
-  return res.status(200).json(cuboid);
+  return res.status(HttpStatus.OK).json(cuboid);
 };
 
 export const create = async (
@@ -91,10 +91,19 @@ export const update = async (
     depth,
   });
 
-  return res.status(200).json({ ...updatedCuboid, bag: bag });
+  return res.status(HttpStatus.OK).json({ ...updatedCuboid, bag: bag });
 };
 
-export const remove = async (req: Request, res: Response): Promise<Response> =>
-  // const id: Id = req.params.id;
+export const remove = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const id: Id = req.params.id;
 
-  res.sendStatus(200);
+  const deletedCount = await Cuboid.query().deleteById(id);
+  if (deletedCount === 0) {
+    return res.sendStatus(HttpStatus.NOT_FOUND);
+  }
+
+  return res.sendStatus(HttpStatus.OK);
+};
