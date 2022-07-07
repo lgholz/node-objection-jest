@@ -9,7 +9,6 @@ export class Cuboid extends Base {
   depth!: number;
   bagId?: Id;
   bag!: Bag;
-  volume!: number;
 
   static tableName = 'cuboids';
 
@@ -24,6 +23,18 @@ export class Cuboid extends Base {
         },
       },
     };
+  }
+
+  static get virtualAttributes(): string[] {
+    return ['volume'];
+  }
+
+  get volume(): number {
+    if (!this.width || !this.height || !this.depth) {
+      return 0;
+    }
+
+    return this.width * this.height * this.depth;
   }
 }
 
