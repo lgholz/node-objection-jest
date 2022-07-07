@@ -48,3 +48,53 @@ export const create = async (
 
   return res.status(HttpStatus.CREATED).json(cuboid);
 };
+
+export const update = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const id: Id = req.params.id;
+  const { width, height, depth } = req.body;
+
+  const cuboid = await Cuboid.query().findById(id).withGraphFetched('bag');
+  if (!cuboid) {
+    return res.sendStatus(HttpStatus.NOT_FOUND);
+  }
+
+  // save volume for compare later
+  const volume = cuboid.volume;
+
+  cuboid.width = width;
+  cuboid.height = height;
+  cuboid.depth = depth;
+
+  // get bag and check new volume space
+  const bag = await Bag.query()
+    .findById(cuboid.bag.id)
+    .withGraphFetched('cuboids');
+
+  if (!bag) {
+    return res.sendStatus(HttpStatus.NOT_FOUND);
+  }
+
+  const diff = cuboid.volume - volume;
+  if (bag?.availableVolume < diff) {
+    return res
+      .status(HttpStatus.UNPROCESSABLE_ENTITY)
+      .json({ message: 'Insufficient capacity in bag' });
+  }
+
+  // update database
+  const updatedCuboid = await Cuboid.query().updateAndFetchById(cuboid.id, {
+    width,
+    height,
+    depth,
+  });
+
+  return res.status(200).json({ ...updatedCuboid, bag: bag });
+};
+
+export const remove = async (req: Request, res: Response): Promise<Response> =>
+  // const id: Id = req.params.id;
+
+  res.sendStatus(200);
