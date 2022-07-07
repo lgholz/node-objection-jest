@@ -30,10 +30,6 @@ export class Cuboid extends Base {
   }
 
   get volume(): number {
-    if (!this.width || !this.height || !this.depth) {
-      return 0;
-    }
-
     return this.width * this.height * this.depth;
   }
 }

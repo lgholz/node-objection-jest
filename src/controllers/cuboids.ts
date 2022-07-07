@@ -73,12 +73,8 @@ export const update = async (
     .findById(cuboid.bag.id)
     .withGraphFetched('cuboids');
 
-  if (!bag) {
-    return res.sendStatus(HttpStatus.NOT_FOUND);
-  }
-
   const diff = cuboid.volume - volume;
-  if (bag?.availableVolume < diff) {
+  if (!bag || bag?.availableVolume < diff) {
     return res
       .status(HttpStatus.UNPROCESSABLE_ENTITY)
       .json({ message: 'Insufficient capacity in bag' });
