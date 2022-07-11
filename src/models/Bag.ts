@@ -14,7 +14,7 @@ export class Bag extends Base {
     return {
       cuboids: {
         relation: Base.HasManyRelation,
-        modelClass: 'Cuboid',
+        modelClass: Cuboid,
         join: {
           from: 'bags.id',
           to: 'cuboids.bagId',
@@ -42,5 +42,3 @@ export class Bag extends Base {
     return this.volume - this.payloadVolume;
   }
 }
-
-export default Bag;
