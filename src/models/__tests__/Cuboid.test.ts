@@ -1,5 +1,5 @@
-import Bag from '../Bag';
-import Cuboid from '../Cuboid';
+import { Bag } from '../Bag';
+import { Cuboid } from '../Cuboid';
 
 let bag: Bag;
 

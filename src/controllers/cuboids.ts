@@ -4,10 +4,14 @@ import { Id } from 'objection';
 import { Bag, Cuboid } from '../models';
 
 export const list = async (req: Request, res: Response): Promise<Response> => {
-  const ids = req.query.ids as Id[];
-  const cuboids = await Cuboid.query().findByIds(ids).withGraphFetched('bag');
+  const ids = (req.query.ids || []) as Id[];
 
-  return res.status(HttpStatus.OK).json(cuboids);
+  const queryBuilder = Cuboid.query().withGraphFetched('bag');
+  const cuboids = ids.length
+    ? await queryBuilder.findByIds(ids)
+    : await queryBuilder;
+
+  return res.status(200).json(cuboids);
 };
 
 export const get = async (req: Request, res: Response): Promise<Response> => {
